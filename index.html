@@ -3,80 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Guarida Crítica - Películas, Libros, Novelas y Cómics</title>
+  <title>La Guarida Crítica - Películas, Libros y Cómics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-  <!-- Header -->
+  <canvas id="starfield-canvas"></canvas>
+
   <header class="navbar">
     <div class="logo-group">
-      <div class="mascot-svg-wrapper">
-        <!-- Space Fox Mascot SVG -->
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="100" cy="100" r="90" fill="url(#cloudGrad)" opacity="0.4"/>
-          <defs>
-            <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#FCD3DE"/>
-              <stop offset="50%" stop-color="#CBB3D6"/>
-              <stop offset="100%" stop-color="#A2B7DD"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Sparkles -->
-          <path d="M 30 50 L 32 45 L 37 43 L 32 41 L 30 36 L 28 41 L 23 43 L 28 45 Z" fill="#FFF" opacity="0.9"/>
-          <path d="M 170 60 L 171 57 L 174 56 L 171 55 L 170 52 L 169 55 L 166 56 L 169 57 Z" fill="#FFF" opacity="0.8"/>
-          <path d="M 160 140 L 161 137 L 164 136 L 161 135 L 160 132 L 159 135 L 156 136 L 159 137 Z" fill="#FFF" opacity="0.9"/>
-
-          <!-- Tail -->
-          <path d="M 115 130 C 155 140 180 100 165 70 C 150 90 125 110 115 130 Z" fill="#FF7043"/>
-          <path d="M 165 70 C 172 78 170 88 160 92 C 155 85 158 75 165 70 Z" fill="#FFFFFF"/>
-
-          <!-- Body -->
-          <ellipse cx="95" cy="125" rx="32" ry="24" fill="#FF7043" transform="rotate(-15 95 125)"/>
-
-          <!-- Ears & Head -->
-          <polygon points="65,80 80,45 95,75" fill="#FF7043"/>
-          <polygon points="70,78 80,52 90,75" fill="#FCD3DE"/>
-          <polygon points="95,75 115,48 128,82" fill="#FF7043"/>
-          <polygon points="100,75 115,55 122,80" fill="#FCD3DE"/>
-
-          <circle cx="95" cy="92" r="30" fill="#FF7043"/>
-          <path d="M 75 92 Q 95 115 115 92 Q 95 106 75 92 Z" fill="#FFFFFF"/>
-          <circle cx="95" cy="100" r="3.5" fill="#3D343E"/>
-          <ellipse cx="84" cy="88" rx="3" ry="4" fill="#3D343E"/>
-          <ellipse cx="106" cy="88" rx="3" ry="4" fill="#3D343E"/>
-
-          <!-- Helmet -->
-          <circle cx="95" cy="90" r="42" fill="none" stroke="#8EA4D2" stroke-width="3.5" opacity="0.85"/>
-          <ellipse cx="78" cy="70" rx="10" ry="5" fill="#FFFFFF" opacity="0.5" transform="rotate(-30 78 70)"/>
-        </svg>
+      <div class="mascot-container" id="interactive-mascot">
+        <div class="speech-bubble" id="mascot-speech">¡Hola! Listo para una buena reseña 🦊☕</div>
+        <div class="mascot-svg-wrapper">
+          <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="glowEffect" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <path d="M 30 50 L 33 42 L 41 39 L 33 36 L 30 28 L 27 36 L 19 39 L 27 42 Z" fill="#B8B8E8" filter="url(#glowEffect)"/>
+            <path d="M 200 40 L 202 34 L 208 32 L 202 30 L 200 24 L 198 30 L 192 32 L 198 34 Z" fill="#E85860" filter="url(#glowEffect)"/>
+            <!-- Libro -->
+            <path d="M 30 195 Q 60 180 95 195 L 95 230 Q 60 215 30 230 Z" fill="#F8F6FF" stroke="#304070" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M 95 195 Q 130 180 160 195 L 160 230 Q 130 215 95 230 Z" fill="#F8F6FF" stroke="#304070" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M 95 195 L 95 230" stroke="#304070" stroke-width="3"/>
+            <!-- Cola -->
+            <path d="M 160 180 C 200 190 225 140 210 100 C 195 120 175 150 160 180 Z" fill="#E85860" stroke="#304070" stroke-width="3" stroke-linejoin="round"/>
+            <!-- Cuerpo y Cabeza -->
+            <ellipse cx="130" cy="155" rx="36" ry="28" fill="#E85860" stroke="#304070" stroke-width="3"/>
+            <polygon points="90,105 108,65 125,98" fill="#E85860" stroke="#304070" stroke-width="3" stroke-linejoin="round"/>
+            <polygon points="120,95 142,70 155,105" fill="#E85860" stroke="#304070" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="122" cy="115" r="32" fill="#E85860" stroke="#304070" stroke-width="3"/>
+            <path d="M 102 118 Q 122 142 142 118 Q 122 132 102 118 Z" fill="#FFFFFF"/>
+            <!-- Gafas -->
+            <circle cx="112" cy="112" r="18" fill="none" stroke="#304070" stroke-width="3.5"/>
+            <circle cx="138" cy="112" r="18" fill="none" stroke="#304070" stroke-width="3.5"/>
+            <line x1="130" y1="112" x2="114" y2="112" stroke="#304070" stroke-width="3"/>
+            <!-- Taza café -->
+            <rect x="92" y="132" width="22" height="18" rx="4" fill="#F8C291" stroke="#304070" stroke-width="2.5"/>
+          </svg>
+        </div>
       </div>
 
       <div>
         <h1 class="logo-title">La Guarida Crítica</h1>
-        <p class="logo-sub">Tu espacio de reseñas para películas, libros, novelas y cómics 🌌🦊</p>
+        <p class="logo-sub">Estación espacial de opiniones y reseñas 🚀🦊☕</p>
       </div>
     </div>
 
-    <button id="btn-download-zip" class="btn-zip">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      Descargar Proyecto ZIP
-    </button>
+    <div class="auth-box">
+      <button id="btn-login" class="btn-zip">🔑 Iniciar Sesión con Google</button>
+      <div id="user-info" class="hidden user-badge">
+        <img id="user-avatar" src="" alt="Avatar" class="avatar-img">
+        <span id="user-name"></span>
+        <button id="btn-logout" class="btn-logout-ctrl">Salir</button>
+      </div>
+    </div>
   </header>
 
-  <!-- Main Container -->
   <main class="main-container">
-
-    <!-- Left Side: Post Creation Panel -->
     <aside class="panel-side">
       <div class="glass-card">
         <div class="card-head">
-          <h2>✨ Nueva Reseña</h2>
-          <p>Comparte tu crítica con etiquetas personalizadas</p>
+          <h2>✨ Nueva Reseña Estelar</h2>
+          <p>Inicia sesión para publicar tu crítica</p>
         </div>
 
         <form id="forum-form">
@@ -84,30 +82,28 @@
             <label for="media-type">Categoría</label>
             <select id="media-type" class="input-ctrl">
               <option value="Pelicula">🎬 Película</option>
-              <option value="Libro">📖 Libro</option>
-              <option value="Novela">🌌 Novela</option>
-              <option value="Comic">💥 Cómics / Manga</option>
+              <option value="Libro">📖 Libro / Novela</option>
+              <option value="Comic">💥 Cómic / Manga</option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="title">Título</label>
-            <input type="text" id="title" class="input-ctrl" placeholder="Ej: Spider-Man, Batman, Dune..." required>
+            <input type="text" id="title" class="input-ctrl" placeholder="Ej: Interstellar, Dune..." required>
           </div>
 
           <div class="form-group">
-            <label for="creator">Director / Autor(a) / Ilustrador</label>
-            <input type="text" id="creator" class="input-ctrl" placeholder="Ej: Stan Lee, Alan Moore, Christopher Nolan..." required>
+            <label for="creator">Director / Autor(a)</label>
+            <input type="text" id="creator" class="input-ctrl" placeholder="Ej: Christopher Nolan..." required>
           </div>
 
           <div class="form-group">
-            <label for="author">Tu Nick / Usuario</label>
-            <input type="text" id="author" class="input-ctrl" placeholder="Ej: ZorroCritico" required>
+            <label for="author">Tu Nick (Automático por Google)</label>
+            <input type="text" id="author" class="input-ctrl" placeholder="Inicia sesión primero..." readonly required>
           </div>
 
-          <!-- Tags Picker Section -->
           <div class="form-group">
-            <label>Etiquetas / Géneros (Selecciona varios)</label>
+            <label>Etiquetas / Géneros</label>
             <div class="tags-picker-grid" id="tags-picker">
               <button type="button" class="tag-chip-btn" data-tag="Comedia">😂 Comedia</button>
               <button type="button" class="tag-chip-btn" data-tag="Suspenso">🕵️ Suspenso</button>
@@ -115,38 +111,14 @@
               <button type="button" class="tag-chip-btn" data-tag="Ciencia Ficción">🚀 Sci-Fi</button>
               <button type="button" class="tag-chip-btn" data-tag="Romance">💖 Romance</button>
               <button type="button" class="tag-chip-btn" data-tag="Terror">👻 Terror</button>
-              <button type="button" class="tag-chip-btn" data-tag="Fantasia">🔮 Fantasía</button>
-              <button type="button" class="tag-chip-btn" data-tag="Aventura">🧭 Aventura</button>
-              <button type="button" class="tag-chip-btn" data-tag="Drama">🎭 Drama</button>
-            </div>
-            <div class="custom-tag-row">
-              <input type="text" id="custom-tag-input" class="input-ctrl" placeholder="Añadir etiqueta personalizada...">
-              <button type="button" id="btn-add-custom-tag" class="btn-add-tag">+</button>
             </div>
           </div>
 
-          <!-- Cover Image Upload -->
           <div class="form-group">
-            <label>Foto de Portada</label>
-            <div class="tab-selectors">
-              <button type="button" class="tab-btn active" id="tab-file-btn" onclick="switchImageTab('file')">📁 Archivo</button>
-              <button type="button" class="tab-btn" id="tab-url-btn" onclick="switchImageTab('url')">🔗 Enlace URL</button>
-            </div>
-
-            <div id="file-tab-content" class="tab-panel active">
-              <input type="file" id="cover-file" accept="image/*" class="input-file">
-            </div>
-
-            <div id="url-tab-content" class="tab-panel">
-              <input type="url" id="cover-url" class="input-ctrl" placeholder="https://ejemplo.com/portada.jpg">
-            </div>
-
-            <div id="preview-box" class="preview-box hidden">
-              <img id="preview-img" src="" alt="Previsualización">
-            </div>
+            <label>Foto de Portada (Enlace URL)</label>
+            <input type="url" id="cover-url" class="input-ctrl" placeholder="https://ejemplo.com/portada.jpg">
           </div>
 
-          <!-- Star Rating -->
           <div class="form-group">
             <label>Puntuación (Estrellas)</label>
             <div class="stars-picker" id="stars-picker">
@@ -159,74 +131,44 @@
             <input type="hidden" id="rating-val" value="5">
           </div>
 
-          <!-- Comment -->
           <div class="form-group">
-            <label for="comment">Tu Comentario / Reseña</label>
-            <textarea id="comment" rows="3" class="input-ctrl textarea-ctrl" placeholder="Escribe aquí tu crítica..." required></textarea>
+            <label for="comment">Tu Reseña</label>
+            <textarea id="comment" rows="3" class="input-ctrl textarea-ctrl" placeholder="Escribe tu opinión..." required></textarea>
           </div>
 
-          <button type="submit" class="btn-submit">Publicar en La Guarida Crítica 🦊✨</button>
+          <button type="submit" id="btn-submit-post" class="btn-submit" disabled>Inicia sesión para publicar 🚀</button>
         </form>
       </div>
     </aside>
 
-    <!-- Right Side: Stream -->
     <section class="panel-content">
-      
-      <!-- Filter Bar -->
       <div class="glass-card filters-card">
-        <!-- Category Tabs -->
         <div class="category-tabs">
           <button class="cat-btn active" onclick="setCategoryFilter('all')">Todos (<span id="count-all">0</span>)</button>
           <button class="cat-btn" onclick="setCategoryFilter('Pelicula')">🎬 Películas</button>
           <button class="cat-btn" onclick="setCategoryFilter('Libro')">📖 Libros</button>
-          <button class="cat-btn" onclick="setCategoryFilter('Novela')">🌌 Novelas</button>
           <button class="cat-btn" onclick="setCategoryFilter('Comic')">💥 Cómics</button>
-        </div>
-
-        <!-- Tag Filter Pills -->
-        <div class="tag-filters-row">
-          <span class="tag-filter-title">Filtrar por Tag:</span>
-          <div id="tag-filter-pills" class="tag-pills-container">
-            <button class="tag-pill-btn active" onclick="setTagFilter('all')">Todos los géneros</button>
-            <button class="tag-pill-btn" onclick="setTagFilter('Comedia')">😂 Comedia</button>
-            <button class="tag-pill-btn" onclick="setTagFilter('Suspenso')">🕵️ Suspenso</button>
-            <button class="tag-pill-btn" onclick="setTagFilter('Accion')">💥 Acción</button>
-            <button class="tag-pill-btn" onclick="setTagFilter('Ciencia Ficción')">🚀 Sci-Fi</button>
-            <button class="tag-pill-btn" onclick="setTagFilter('Romance')">💖 Romance</button>
-            <button class="tag-pill-btn" onclick="setTagFilter('Terror')">👻 Terror</button>
-            <button class="tag-pill-btn" onclick="setTagFilter('Fantasia')">🔮 Fantasía</button>
-          </div>
         </div>
 
         <div class="search-sort-row">
           <div class="search-field">
-            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="search-input" placeholder="Buscar título, autor, etiqueta o reseña...">
+            <input type="text" id="search-input" placeholder="Buscar en la guarida...">
           </div>
-
           <select id="sort-select" class="input-ctrl sort-select">
             <option value="newest">Más recientes</option>
             <option value="rating-desc">Mejor valorados</option>
-            <option value="rating-asc">Menor valoración</option>
-            <option value="likes">Más populares</option>
           </select>
         </div>
       </div>
 
-      <!-- Forum Posts Feed -->
-      <div id="posts-container" class="posts-feed">
-        <!-- Dynamically injected cards -->
-      </div>
-
+      <div id="posts-container" class="posts-feed"></div>
     </section>
-
   </main>
 
   <footer class="footer">
-    <p>🌌 <strong>La Guarida Crítica</strong> &copy; 2026 — Espacio libre para amantes de películas, libros, novelas y cómics.</p>
+    <p>🌌 <strong>La Guarida Crítica</strong> &copy; 2026 — Sincronizado en la nube con Firebase.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
