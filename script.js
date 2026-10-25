@@ -20,6 +20,7 @@ let posts = [];
 let selectedTags = new Set();
 let currentCategoryFilter = 'all';
 let currentUser = null;
+let uploadedImageBase64 = "";
 
 const forumForm = document.getElementById('forum-form');
 const starsPicker = document.getElementById('stars-picker');
@@ -27,7 +28,6 @@ const ratingVal = document.getElementById('rating-val');
 const postsContainer = document.getElementById('posts-container');
 const countAll = document.getElementById('count-all');
 const searchInput = document.getElementById('search-input');
-const sortSelect = document.getElementById('sort-select');
 const authorInput = document.getElementById('author');
 const btnLogin = document.getElementById('btn-login');
 const btnLogout = document.getElementById('btn-logout');
@@ -35,6 +35,8 @@ const userInfo = document.getElementById('user-info');
 const userAvatar = document.getElementById('user-avatar');
 const userName = document.getElementById('user-name');
 const btnSubmitPost = document.getElementById('btn-submit-post');
+const coverFileInput = document.getElementById('cover-file');
+const imageNameIndicator = document.getElementById('image-preview-name');
 
 const defaultPlaceholder = "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80";
 
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAuthListeners();
   setupStarPicker();
   setupTagsPicker();
+  setupImageReader();
   cargarReseñasDeNube();
   setupEventListeners();
 });
@@ -50,9 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupAuthListeners() {
   btnLogin.addEventListener('click', () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider).catch((error) => {
-      console.error("Error al iniciar sesión:", error);
-    });
+    signInWithPopup(auth, provider).catch((error) => console.error("Error al iniciar sesión:", error));
   });
 
   btnLogout.addEventListener('click', () => {
@@ -68,7 +69,7 @@ function setupAuthListeners() {
       userName.textContent = user.displayName;
       authorInput.value = user.displayName;
       btnSubmitPost.disabled = false;
-      btnSubmitPost.textContent = "Publicar en La Guarida Crítica 🚀✨";
+      btnSubmitPost.textContent = "Publicar Reseña 🚀✨";
     } else {
       currentUser = null;
       btnLogin.classList.remove('hidden');
@@ -76,6 +77,23 @@ function setupAuthListeners() {
       authorInput.value = "";
       btnSubmitPost.disabled = true;
       btnSubmitPost.textContent = "Inicia sesión para publicar 🚀";
+    }
+  });
+}
+
+function setupImageReader() {
+  coverFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      imageNameIndicator.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        uploadedImageBase64 = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      imageNameIndicator.textContent = "Ninguna imagen seleccionada";
+      uploadedImageBase64 = "";
     }
   });
 }
@@ -120,7 +138,6 @@ forumForm.addEventListener('submit', (e) => {
   const author = currentUser.displayName;
   const rating = parseInt(ratingVal.value);
   const comment = document.getElementById('comment').value.trim();
-  const coverUrlInput = document.getElementById('cover-url').value.trim();
 
   const newPost = {
     id: Date.now(),
@@ -130,7 +147,7 @@ forumForm.addEventListener('submit', (e) => {
     creator,
     author,
     tags: Array.from(selectedTags).length > 0 ? Array.from(selectedTags) : ["General"],
-    cover: coverUrlInput !== "" ? coverUrlInput : defaultPlaceholder,
+    cover: uploadedImageBase64 !== "" ? uploadedImageBase64 : defaultPlaceholder,
     rating,
     comment,
     likes: 0,
@@ -144,6 +161,8 @@ forumForm.addEventListener('submit', (e) => {
   document.querySelectorAll('.tag-chip-btn').forEach(btn => btn.classList.remove('selected'));
   authorInput.value = currentUser.displayName;
   ratingVal.value = 5;
+  uploadedImageBase64 = "";
+  imageNameIndicator.textContent = "Ninguna imagen seleccionada";
   setupStarPicker();
 });
 
@@ -167,7 +186,7 @@ window.deletePost = async function(firestoreId, postUid) {
     return;
   }
 
-  if (confirm("¿Estás seguro de que deseas eliminar esta reseña?")) {
+  if (confirm("¿Estás seguro de eliminar esta reseña?")) {
     try {
       await deleteDoc(doc(db, "resenas", firestoreId));
       cargarReseñasDeNube();
@@ -179,7 +198,7 @@ window.deletePost = async function(firestoreId, postUid) {
 
 window.setCategoryFilter = function(category) {
   currentCategoryFilter = category;
-  document.querySelectorAll('.category-tabs .cat-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.nav-tab, .cat-btn').forEach(btn => btn.classList.remove('active'));
   event.target.classList.add('active');
   renderPosts();
 };
@@ -208,10 +227,10 @@ function renderPosts() {
 
   if (filtered.length === 0) {
     postsContainer.innerHTML = `
-      <div class="empty-box" style="grid-column:1/-1; text-align:center; padding:3rem;">
-        <span>🦊</span>
-        <h3>No hay reseñas en la guarida</h3>
-        <p>¡Sé el primero en iniciar sesión y publicar una!</p>
+      <div class="empty-box" style="grid-column:1/-1; text-align:center; padding:4rem;">
+        <span style="font-size:3rem;">🦊</span>
+        <h3 style="margin-top:1rem; font-family:'Comfortaa', cursive;">No hay reseñas en la guarida</h3>
+        <p style="color:#B8B8E8; font-size:0.9rem; margin-top:0.4rem;">¡Sé el primero en iniciar sesión y publicar una!</p>
       </div>
     `;
     return;
@@ -233,7 +252,6 @@ function renderPosts() {
         
         <div class="post-stars">
           <span>${renderStars(post.rating)}</span>
-          <span class="rating-num">(${post.rating}/5)</span>
         </div>
 
         <p class="post-text">"${escapeHTML(post.comment)}"</p>
@@ -257,12 +275,14 @@ function renderPosts() {
 function getCategoryIcon(type) {
   if (type === 'Pelicula') return '🎬';
   if (type === 'Libro') return '📖';
-  return '💥';
+  if (type === 'Comic') return '💥';
+  return '🌌';
 }
 function getCategoryName(type) {
   if (type === 'Pelicula') return 'Película';
   if (type === 'Libro') return 'Libro';
-  return 'Cómic';
+  if (type === 'Comic') return 'Cómic';
+  return 'Manga';
 }
 
 function setupTagsPicker() {
